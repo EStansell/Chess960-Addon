@@ -392,7 +392,7 @@ public class Presenter {
 	 ***************************************************************/
 	protected final void reset() {
 		view.resetGame();
-		model = new ChessModel();
+		model = new ChessModel(view.get960());
 		setUp();
 	}
 	

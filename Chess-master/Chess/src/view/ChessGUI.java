@@ -157,6 +157,7 @@ public class ChessGUI implements IChessUI {
 	/** Tells if the board should highlight valid moves or not. */
 	private boolean highlightValid;
 	
+	public static boolean chess960Valid;
 	/** NUmber of rows on the board. */
 	private int numRows;
 	
@@ -331,6 +332,11 @@ public class ChessGUI implements IChessUI {
 		validItem.setActionCommand("Valid");
 		validItem.setSelected(true);
 		
+		JCheckBoxMenuItem chess960 = new JCheckBoxMenuItem("Playing 960Chess");
+		chess960.addActionListener(menuListener);
+		chess960.setActionCommand("Is960");
+		chess960.setSelected(chess960Valid);
+		
 		fileMenu.setForeground(Color.WHITE);
 		
 		menuBar.setLayout(new BorderLayout());
@@ -341,6 +347,7 @@ public class ChessGUI implements IChessUI {
 		fileMenu.add(colorItem);
 		fileMenu.add(sizeItem);
 		fileMenu.add(validItem);
+		fileMenu.add(chess960);
 		
 		menuBar.add(fileMenu, BorderLayout.LINE_START);
 		
@@ -494,6 +501,11 @@ public class ChessGUI implements IChessUI {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean get960() {
+		return chess960Valid;
 	}
 	
 	@Override
@@ -726,6 +738,18 @@ public class ChessGUI implements IChessUI {
 				}
 				
 				highlightAll(highlightValid);
+			}
+			
+			if (source.equals("Is960")) {
+				JCheckBoxMenuItem b = (JCheckBoxMenuItem) e.getSource();
+				
+				if (b.isSelected()) {
+					chess960Valid = true;
+				} else {
+					chess960Valid = false;
+				}
+				
+				
 			}
 		}
 	};

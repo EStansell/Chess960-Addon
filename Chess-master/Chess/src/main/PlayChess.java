@@ -1,6 +1,9 @@
 package main;
 
 import presenter.Presenter;
+
+import java.util.Random;
+
 import model.ChessModel;
 import model.IChessModel;
 import view.ChessGUI;
@@ -29,6 +32,7 @@ final class PlayChess {
 	 * @param args main method arguments.
 	 ***************************************************************/
 	public static void main(final String[] args) {
+		
 		IChessModel model = new ChessModel();
 		
 		// board size
@@ -36,6 +40,7 @@ final class PlayChess {
 		int numCols = model.numColumns();
 		
 		IChessUI view = new ChessGUI(numRows, numCols);
+		
 		new Presenter(model, view);
 	}
 

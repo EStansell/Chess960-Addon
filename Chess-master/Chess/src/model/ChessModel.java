@@ -30,7 +30,11 @@ public class ChessModel implements IChessModel {
 	 * Constructor sets up both the 'real' and test game board.
 	 ***************************************************************/
 	public ChessModel() {
-		board = new ChessBoard(size, true);
+		board = new ChessBoard(size, true, false);
+		bothPlayersInCheck = false;
+	}	
+	public ChessModel(boolean is960) {
+		board = new ChessBoard(size, true, is960);
 		bothPlayersInCheck = false;
 	}
 

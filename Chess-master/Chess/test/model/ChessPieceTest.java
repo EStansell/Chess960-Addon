@@ -32,7 +32,7 @@ public abstract class ChessPieceTest {
 	@Before
 	public final void makeBoard() {
 		// Don't put any pieces on the board.
-		board = new ChessBoard(BOARD_SIZE, false);
+		board = new ChessBoard(BOARD_SIZE, false, false);
 		piece = make();
 	}
 

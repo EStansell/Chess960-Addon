@@ -14,8 +14,8 @@ public class ChessBoardTest {
 	
 	@Before
 	public final void makeBoard() {
-		empty = new ChessBoard(8, false);
-		full = new ChessBoard(8, true);
+		empty = new ChessBoard(8, false, false);
+		full = new ChessBoard(8, true, false);
 	}
 	
 	@Test

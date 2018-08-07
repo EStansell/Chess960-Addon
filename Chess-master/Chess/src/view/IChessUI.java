@@ -138,4 +138,7 @@ public interface IChessUI {
 	 ***************************************************************/
 	void changeBoardSize();
 
+	boolean get960();
+	
+
 }

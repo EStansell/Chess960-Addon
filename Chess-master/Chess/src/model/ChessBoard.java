@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 /********************************************************************
  * CIS 350 - 01
  * Chess
@@ -28,6 +30,7 @@ public class ChessBoard implements IChessBoard {
 	
 	/** Location of the black King. */
 	private int[] blackKing;
+	private boolean is960 = false;
 	
 	/****************************************************************
 	 * Constructor for ChessBoard.
@@ -37,7 +40,7 @@ public class ChessBoard implements IChessBoard {
 	 * @param placePieces if true, will place game pieces. 
 	 * 			If false, will create an empty game board.
 	 ***************************************************************/
-	public ChessBoard(final int boardSize, final boolean placePieces) {
+	public ChessBoard(final int boardSize, final boolean placePieces, final boolean is960) {
 		board = new ChessPiece[boardSize][boardSize];
 		
 		whiteKing = new int[2];
@@ -51,7 +54,11 @@ public class ChessBoard implements IChessBoard {
 				}
 			}
 		} else {
-			setupBoard();
+			if(is960) {
+				setup960Board();
+			} else {
+				setupBoard();
+			}
 		}
 		
 		currentPlayer = Player.WHITE;
@@ -70,6 +77,93 @@ public class ChessBoard implements IChessBoard {
 		numMoves = other.numMoves;
 		whiteKing = other.whiteKing;
 		blackKing = other.blackKing;
+	}
+	/****************************************************************
+	 * Places the game pieces into random locations on the board
+	 * following the following rules.
+	 * 1) The bishops must be placed on opposite-color squares.
+	 * 2) The king must be placed on a square between the rooks.
+	 ***************************************************************/
+	private void setup960Board() {
+		/* Random generator*/
+		Random random = new Random();
+		/* Column Holder*/
+		int[] usedCol = {-2, -2, -2, -2, -2, -2, -2, -2};
+		
+		/* Rows for the black pieces*/
+		int rowPawns = 1; 
+		int row = 0;
+		
+		// Column of the board where the pieces start
+		final int kingCol = random.nextInt(6)+1;
+		usedCol[0] = kingCol;
+		int rook1Col = random.nextInt(kingCol);
+		int rook2Col = random.nextInt(7 - kingCol) + kingCol + 1;
+		usedCol[1] = rook1Col;
+		usedCol[2] = rook2Col;
+		int bishop1Col = -1;
+		int bishop2Col = -1;
+		while(bishop1Col == -1 || bishop2Col == -1) {
+			int n = random.nextInt(8);
+			if(notUsed(n, usedCol) && isEven(n)) {
+				bishop1Col = n;
+				usedCol[3] = bishop1Col;
+			} else if (notUsed(n, usedCol) && !isEven(n)){
+				bishop2Col = n;
+				usedCol[4] = bishop2Col;
+			}
+		}	
+		
+		int knight1Col = -1;
+		int queenCol = -1;
+		int knight2Col = -1;
+		while(knight1Col == -1 || queenCol == -1 || knight2Col == -1) {
+			int n = random.nextInt(8);
+			if(queenCol == -1 && notUsed(n, usedCol)) {
+				queenCol = n;
+				usedCol[5] = queenCol;
+			} else if (knight1Col == -1 && notUsed(n, usedCol)) {
+				knight1Col = n;
+				usedCol[6] = knight1Col;
+			} else if (knight2Col == -1 && notUsed(n, usedCol)) {
+				knight2Col = n;
+				usedCol[7] = knight2Col;
+			}
+		}
+		
+		
+		/* Places both black and white pieces */
+		for (Player p : Player.values()) {				
+			board[row][rook1Col] = new Rook(p);
+			board[row][knight1Col] = new Knight(p);
+			board[row][bishop1Col] = new Bishop(p);
+			board[row][queenCol] = new Queen(p);
+			board[row][kingCol] = new King(p);
+			board[row][bishop2Col] = new Bishop(p);
+			board[row][knight2Col] = new Knight(p);
+			board[row][rook2Col] = new Rook(p);
+			
+			/* Places pawns */
+			for (int col = 0; col < numColumns(); col++) {
+				board[rowPawns][col] = new Pawn(p);
+			}
+			
+			// Records Kings location
+			int[] loc = {row, kingCol};
+			setKing(p, loc);
+			
+			row = numRows() - 1; 
+			rowPawns = row - 1;
+		}
+	}
+	private boolean isEven(int n) {
+		return n == 0 || n == 2 || n == 4 || n == 6;
+	}
+	private boolean notUsed(int r, int[] arr) {
+		for(int n : arr) {
+			if(r == n) { return false; }
+		}
+		return true;
 	}
 	
 	/****************************************************************
@@ -266,6 +360,12 @@ public class ChessBoard implements IChessBoard {
 		} else {
 			blackKing = location;
 		}
+	}
+	public boolean getIs960() {
+		return is960;
+	}
+	public void setIs960(boolean Is960) {
+		is960 = Is960;
 	}
 	
 	@Override
